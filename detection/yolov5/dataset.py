@@ -1,10 +1,10 @@
-import cv2
+import os
+import numpy as np
 from typing import Any, Callable, Optional
 from torchvision.datasets import VisionDataset
-import os
 from detection.yolov5.data_utils import load_and_preprocess
 from torch.utils.data import DataLoader
-import numpy as np
+
 
 class YoloCocoDataset(VisionDataset):
     def __init__(

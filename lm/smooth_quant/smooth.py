@@ -5,7 +5,7 @@ import torch.nn as nn
 from tqdm import tqdm
 
 
-def get_act_scales(model, sample_num, get_tokens: Callable):
+def get_act_max(model, sample_num, get_tokens: Callable):
     act_scales = {}
     device = next(model.parameters()).device
 
@@ -13,12 +13,12 @@ def get_act_scales(model, sample_num, get_tokens: Callable):
         activation = inputs
         if isinstance(inputs, tuple):
             activation = inputs[0]
-        # [Batch,SeqLen,IC]
+        # [batch,seq_len,ic]
         ic = activation.shape[-1]
-        # [BatchxSeqLen,IC]
+        # [batchxseq_len,ic]
         activation = activation.view(-1, ic).abs().detach()
-        # Get max value along IC.
-        # [IC]
+        # Get max value along ic.
+        # [ic]
         comming_max = torch.max(activation, dim=0)[0].float().cpu()
         if name in act_scales:
             act_scales[name] = torch.max(act_scales[name], comming_max)
@@ -43,6 +43,15 @@ def get_act_scales(model, sample_num, get_tokens: Callable):
     return act_scales
 
 
+def get_weight_max(liner_layer: nn.Linear):
+    # Weight : [oc,ic]
+    return liner_layer.weight.abs().max(dim=0)[0]
+
+
+def compute_scale(weight_max, act_max, alpha):
+    return (act_scales.pow(alpha) / weight_max.pow(1-alpha)).clamp(min=1e-5)
+
+
 if __name__ == '__main__':
     from lm.data_utils import get_wikitext2
     from transformers import AutoTokenizer, AutoModel
@@ -58,4 +67,4 @@ if __name__ == '__main__':
     def _get_calib_tokens(i):
         return torch.from_numpy(calib_data[i]['input_ids'])
 
-    act_scales = get_act_scales(model, calib_num, _get_calib_tokens)
+    act_scales = get_act_max(model, calib_num, _get_calib_tokens)

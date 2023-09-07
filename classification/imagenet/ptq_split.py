@@ -41,7 +41,7 @@ def split(val_dir, calib_out_dir='./img1k_calib', test_out_dir='./img1k_test', c
                 shutil.copyfile(src=source, dst=copyto)
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     split(val_dir='/media/tyger/Elements/DLData/DataSets/ILSVRC2012/ILSVRC2012_img_val',
           calib_out_dir='/media/tyger/Elements/DLData/DataSets/ILSVRC2012/img1k_calib',
           test_out_dir='/media/tyger/Elements/DLData/DataSets/ILSVRC2012/img1k_test')

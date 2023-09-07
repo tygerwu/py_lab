@@ -41,6 +41,6 @@ def move_valimg(val_dir='./val', devkit_dir='./ILSVRC2012_devkit_t12'):
                     os.path.join(output_dir, filename))
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     move_valimg('/media/tyger/Elements/DLData/DataSets/ILSVRC2012/ILSVRC2012_img_val',
                 '/media/tyger/Elements/DLData/DataSets/ILSVRC2012/ILSVRC2012_devkit_t12')
